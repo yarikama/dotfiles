@@ -27,7 +27,10 @@ else
 fi
 
 echo -e "${GREEN}Linking configurations with GNU Stow...${NC}"
-cd ~/dotfiles
+cd ~/dotfiles || {
+  echo "Error: ~/dotfiles directory not found"
+  exit 1
+}
 rm -f ~/.zshrc
 rm -f ~/.tmux.conf
 
@@ -37,7 +40,7 @@ stow zsh
 
 if [ "$SHELL" != "$(which zsh)" ]; then
   echo -e "${GREEN}Changing default shell to zsh...${NC}"
-  chsh -s $(which zsh)
+  chsh -s "$(which zsh)"
 fi
 
 echo -e "${BLUE}==================================================${NC}"
