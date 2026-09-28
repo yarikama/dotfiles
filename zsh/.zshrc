@@ -63,15 +63,41 @@ zinit snippet OMZP::command-not-found
 zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
 zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
 zstyle ':completion:*' menu no
-zstyle ':fzf-tab:complete:cd:*' fzf-preview 'ls -G $realpath'
-zstyle ':fzf-tab:__zoxide_z:*' fzf-preview 'ls -G $realpath'
 
+# ls: BSD (macOS) and GNU (Linux) spell colour differently
+if [[ "$OSTYPE" == darwin* ]]; then
+  alias ls='ls -G'
+  _LS_PREVIEW='ls -G $realpath'
+else
+  alias ls='ls --color=auto'
+  _LS_PREVIEW='ls --color=auto $realpath'
+fi
+zstyle ':fzf-tab:complete:cd:*' fzf-preview "$_LS_PREVIEW"
+zstyle ':fzf-tab:__zoxide_z:*' fzf-preview "$_LS_PREVIEW"
 
 # Aliases
-alias ls='ls -G'
 alias e='exit'
 alias cl='clear'
 
-# Shell integrations
-eval "$(fzf --zsh)"
-eval "$(zoxide init --cmd cd zsh)"
+export PATH="$HOME/.local/bin:$PATH"
+
+# macOS only: Google Cloud SDK installed via Homebrew
+if [[ "$OSTYPE" == darwin* ]]; then
+  export CLOUDSDK_PYTHON=/opt/homebrew/opt/python@3.12/bin/python3.12
+  export PATH="/opt/homebrew/share/google-cloud-sdk/bin:$PATH"
+  [[ -f /opt/homebrew/share/google-cloud-sdk/path.zsh.inc ]] && \
+    source /opt/homebrew/share/google-cloud-sdk/path.zsh.inc
+  [[ -f /opt/homebrew/share/google-cloud-sdk/completion.zsh.inc ]] && \
+    source /opt/homebrew/share/google-cloud-sdk/completion.zsh.inc
+fi
+
+# Shell integrations. zoxide asks to be initialised last, so keep it at the
+# bottom of this file.
+command -v fzf >/dev/null && eval "$(fzf --zsh)"
+
+# Claude Code runs commands from a shell snapshot that restores functions but
+# not hook arrays, so zoxide's cd() sees an empty chpwd_functions and warns on
+# every call. The hook really is absent there (agent cd's stay out of the
+# database, which is fine), so silence the check in that environment only.
+[[ -n ${CLAUDECODE:-} ]] && export _ZO_DOCTOR=0
+command -v zoxide >/dev/null && eval "$(zoxide init --cmd cd zsh)"

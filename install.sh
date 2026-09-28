@@ -11,11 +11,19 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
   if ! command -v brew &>/dev/null; then
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
   fi
-  brew install stow nvim tmux ripgrep fd fzf node python gcc zsh
+  brew install stow nvim tmux ripgrep fd fzf node python gcc zsh zoxide
 elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
   echo -e "${GREEN}Detected Linux. Installing dependencies with apt...${NC}"
   sudo apt update
-  sudo apt install -y stow neovim tmux ripgrep fd-find fzf nodejs npm python3-pip build-essential zsh
+  sudo apt install -y stow neovim tmux ripgrep fd-find fzf nodejs npm \
+    python3-pip build-essential zsh zoxide curl git unzip
+
+  # Debian/Ubuntu ship fd as fdfind to avoid a name clash. Expose it as fd so
+  # the nvim config and anything else expecting the upstream name works.
+  if command -v fdfind &>/dev/null && ! command -v fd &>/dev/null; then
+    mkdir -p "$HOME/.local/bin"
+    ln -sf "$(command -v fdfind)" "$HOME/.local/bin/fd"
+  fi
 fi
 
 if [ ! -d "$HOME/.tmux/plugins/tpm" ]; then
@@ -40,7 +48,7 @@ stow zsh
 
 if [ "$SHELL" != "$(which zsh)" ]; then
   echo -e "${GREEN}Changing default shell to zsh...${NC}"
-  chsh -s "$(which zsh)"
+  chsh -s "$(which zsh)" || echo "chsh failed; run it yourself or use: sudo chsh -s $(which zsh) $USER"
 fi
 
 echo -e "${BLUE}==================================================${NC}"

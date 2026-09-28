@@ -3,3 +3,5 @@ tmux/.tmux/plugins/
 nvim/.config/nvim/.netrwhist
 nvim/.config/nvim/undo/
 
+
+.DS_Store
