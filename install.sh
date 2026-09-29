@@ -35,16 +35,23 @@ else
 fi
 
 echo -e "${GREEN}Linking configurations with GNU Stow...${NC}"
-cd ~/dotfiles || {
-  echo "Error: ~/dotfiles directory not found"
-  exit 1
-}
-rm -f ~/.zshrc
-rm -f ~/.tmux.conf
+# Work from wherever this repo was cloned, not a fixed ~/dotfiles, and link
+# into $HOME explicitly: stow's default target is the parent directory,
+# which is only $HOME when the repo sits directly in it.
+cd "$(dirname "$0")" || exit 1
 
-stow nvim
-stow tmux
-stow zsh
+# Stow refuses to replace real files. Move any that are in the way aside
+# rather than deleting them; existing symlinks are left for stow to handle.
+for f in .zshrc .zshenv .tmux.conf; do
+  if [ -e "$HOME/$f" ] && [ ! -L "$HOME/$f" ]; then
+    mv "$HOME/$f" "$HOME/$f.pre-dotfiles"
+    echo "Moved existing ~/$f to ~/$f.pre-dotfiles"
+  fi
+done
+
+stow -t "$HOME" nvim
+stow -t "$HOME" tmux
+stow -t "$HOME" zsh
 
 if [ "$SHELL" != "$(which zsh)" ]; then
   echo -e "${GREEN}Changing default shell to zsh...${NC}"
