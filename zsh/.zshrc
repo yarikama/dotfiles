@@ -95,9 +95,5 @@ fi
 # bottom of this file.
 command -v fzf >/dev/null && eval "$(fzf --zsh)"
 
-# Claude Code runs commands from a shell snapshot that restores functions but
-# not hook arrays, so zoxide's cd() sees an empty chpwd_functions and warns on
-# every call. The hook really is absent there (agent cd's stay out of the
-# database, which is fine), so silence the check in that environment only.
-[[ -n ${CLAUDECODE:-} ]] && export _ZO_DOCTOR=0
+# See .zshenv for why zoxide's doctor check is off inside Claude Code.
 command -v zoxide >/dev/null && eval "$(zoxide init --cmd cd zsh)"
