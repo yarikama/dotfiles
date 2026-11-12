@@ -1,0 +1,38 @@
+# Ghostty config. Run `ghostty +show-config --default --docs` for every option.
+# Reload with Cmd+Shift+, (some options, like background-opacity and the
+# titlebar style, only apply after quitting Ghostty with Cmd+Q).
+
+# --- Font ---
+font-family = "JetBrainsMono Nerd Font"
+font-size = 18
+
+# --- Theme ---
+# Monokai Pro everywhere: tmux, Neovim, the p10k prompt, completion colours and
+# lazygit are set to match this palette (see the README).
+theme = Monokai Pro
+
+# --- Window ---
+window-padding-x = 10
+window-padding-y = 10
+
+# macOS only (Linux builds accept these and ignore them):
+# tabs live in the titlebar instead of a separate bar
+macos-titlebar-style = tabs
+# render theme colours in the P3 space of Mac displays
+window-colorspace = display-p3
+
+# --- Transparency ---
+# 0 = fully transparent, 1 = opaque. Only applies after a full restart.
+background-opacity = 0.88
+# Blur what shows through; higher is blurrier (macOS and KDE only)
+background-blur = 20
+
+# --- SSH ---
+# Remote Linux hosts usually lack Ghostty's xterm-ghostty terminfo, which breaks
+# tmux and Neovim there. ssh-terminfo installs it on the host on first connect;
+# ssh-env falls back to TERM=xterm-256color when that is not possible.
+shell-integration-features = ssh-env,ssh-terminfo
+
+# --- Behaviour ---
+copy-on-select = true
+confirm-close-surface = false

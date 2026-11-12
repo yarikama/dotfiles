@@ -1,0 +1,29 @@
+# Shared git settings, read from ~/.config/git/config. Identity (name, email,
+# signing key) stays in ~/.gitconfig, which is not in this public repo and
+# takes precedence over this file.
+
+# delta: syntax-highlighted diffs with line numbers. Each command falls back to
+# git's normal output on machines where delta is not installed.
+[core]
+	pager = "if command -v delta >/dev/null 2>&1; then delta; else less; fi"
+[interactive]
+	diffFilter = "if command -v delta >/dev/null 2>&1; then delta --color-only; else cat; fi"
+
+# Monokai Pro colours, to match Ghostty.
+[delta]
+	navigate = true
+	line-numbers = true
+	syntax-theme = Monokai Extended
+	file-style = bold "#78dce8"
+	file-decoration-style = "#78dce8" ul
+	hunk-header-style = file line-number syntax
+	hunk-header-decoration-style = "#ab9df2" box
+	minus-style = syntax "#3f2a33"
+	minus-emph-style = syntax "#6b2f42"
+	plus-style = syntax "#2f3a2a"
+	plus-emph-style = syntax "#4a5f35"
+	line-numbers-minus-style = "#ff6188"
+	line-numbers-plus-style = "#a9dc76"
+	line-numbers-zero-style = "#727072"
+	line-numbers-left-style = "#5b595c"
+	line-numbers-right-style = "#5b595c"
