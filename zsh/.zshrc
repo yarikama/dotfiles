@@ -59,6 +59,18 @@ zinit snippet OMZP::extract
 zinit snippet OMZP::aws
 zinit snippet OMZP::command-not-found
 
+# --- Monokai Pro colours (matches Ghostty, tmux and Neovim) ---
+# vivid's "ansi" theme writes LS_COLORS with palette slots only, so file colours
+# in completion menus follow the terminal theme. It must be set before the
+# list-colors zstyle below, which reads LS_COLORS when it is defined.
+command -v vivid >/dev/null && export LS_COLORS="$(vivid generate ansi)"
+export FZF_DEFAULT_OPTS="--color=bg+:#403e41,fg+:#fcfcfa,hl:#ffd866,hl+:#ffd866,pointer:#ff6188,prompt:#a9dc76,info:#ab9df2,marker:#a9dc76,spinner:#ab9df2,border:#5b595c,header:#78dce8"
+# fzf-tab ignores FZF_DEFAULT_OPTS unless told otherwise
+zstyle ':fzf-tab:*' use-fzf-default-opts yes
+# On macOS lazygit looks in ~/Library/Application Support; point it at the
+# stowed config instead.
+export LG_CONFIG_FILE="$HOME/.config/lazygit/config.yml"
+
 # Completion styling
 zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
 zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"

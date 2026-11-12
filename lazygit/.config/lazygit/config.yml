@@ -1,0 +1,24 @@
+# lazygit reads this through LG_CONFIG_FILE (set in .zshrc), because on macOS
+# its default location is ~/Library/Application Support, outside stow's reach.
+gui:
+  theme:
+    # Monokai Pro. Without this, lazygit highlights the selected line with the
+    # palette's "blue" slot, which Monokai Pro fills with orange.
+    activeBorderColor: ['#a9dc76', bold]
+    inactiveBorderColor: ['#727072']
+    searchingActiveBorderColor: ['#ffd866', bold]
+    optionsTextColor: ['#78dce8']
+    selectedLineBgColor: ['#403e41']
+    inactiveViewSelectedLineBgColor: ['#363337']
+    cherryPickedCommitFgColor: ['#78dce8']
+    cherryPickedCommitBgColor: ['#403e41']
+    markedBaseCommitFgColor: ['#ffd866']
+    markedBaseCommitBgColor: ['#403e41']
+    unstagedChangesColor: ['#ff6188']
+    defaultFgColor: ['#fcfcfa']
+
+git:
+  pagers:
+    # delta, configured in ~/.config/git/config. Plain diffs when it is missing.
+    - colorArg: always
+      pager: sh -c 'if command -v delta >/dev/null 2>&1; then delta --dark --paging=never; else cat; fi'
